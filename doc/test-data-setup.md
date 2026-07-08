@@ -21,7 +21,7 @@ After a full load:
 | - stores (proj "Stores")       |    10 |
 | item (taxa + places + stores)  |   517 |
 | items with `data.branch`       |   458 |
-| location parent links          | 40019 |
+| location parent links          | 40017 |
 | store ("stored in") links      | 30015 |
 
 Domain records split ~10000 per project (7,8,9,10). Every taxonomy item

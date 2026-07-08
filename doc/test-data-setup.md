@@ -15,16 +15,16 @@ After a full load:
 
 | Entity                         | Count |
 |--------------------------------|------:|
-| project_record (total)         |  4055 |
-| - domain records (proj 7-10)   |  4019 |
+| project_record (total)         | 40055 |
+| - domain records (proj 7-10)   | 40019 |
 | - localities (proj "Locations")|    26 |
 | - stores (proj "Stores")       |    10 |
 | item (taxa + places + stores)  |   517 |
 | items with `data.branch`       |   458 |
-| location parent links          |  4019 |
-| store ("stored in") links      |  3015 |
+| location parent links          | 40019 |
+| store ("stored in") links      | 30015 |
 
-Domain records split ~1000 per project (7,8,9,10). Every taxonomy item
+Domain records split ~10000 per project (7,8,9,10). Every taxonomy item
 carries its lineage in `item.data` (`branch`, `classification`, `rank`,
 `branch_path`, `rank_depth`).
 
@@ -59,7 +59,7 @@ database:
 |-------------------------------|--------------------------------------|
 | `seed_bootstrap.sql`          | base scaffold (user, projects, domains) |
 | `seed_test_data.sql`          | curated demo: 19 records, taxonomies, full keyword vocabulary |
-| `seed_bulk_data.sql`          | 4000 bulk records + full Kingdom->Species taxonomies |
+| `seed_bulk_data.sql`          | 40000 bulk records + full Kingdom->Species taxonomies |
 | `seed_relations_data.sql`     | locations + collection stores as records, linked to domain records |
 | `seed_taxon_branch.sql`       | denormalises taxon lineage + rank into `item.data` |
 | `seed_bulk_teardown.sql`      | removes the bulk data only           |

@@ -1,7 +1,7 @@
 --
--- seed_bulk_data.sql — large-volume demo data (1000 records per project)
+-- seed_bulk_data.sql — large-volume demo data (10000 records per project)
 --
--- Adds 4000 project_records (1000 each to projects 7,8,9,10) on top of the
+-- Adds 40000 project_records (10000 each to projects 7,8,9,10) on top of the
 -- curated demo (seed_test_data.sql MUST be run first — this reuses its
 -- keyword groups, data_groups and users).
 --
@@ -348,11 +348,11 @@ BEGIN
         WHERE n.list = L_min AND n.rank='species';
 
     ------------------------------------------------------------------
-    -- 1000 OBSERVATIONS (project 7)
+    -- 10000 OBSERVATIONS (project 7)
     ------------------------------------------------------------------
     -- NB: pick the species by random ARRAY INDEX evaluated per generated row.
     -- An uncorrelated "LATERAL (... ORDER BY random() LIMIT 1)" is evaluated
-    -- once by the planner and would assign the SAME species to all 1000 rows.
+    -- once by the planner and would assign the SAME species to all 10000 rows.
     CREATE TEMP TABLE g_obs ON COMMIT DROP AS
     WITH p AS (SELECT array_agg(ili_id) a_ili, count(*)::int c FROM pool_ls)
     SELECT nextval('dbnext.project_record_id_seq') AS rec_id,
@@ -366,7 +366,7 @@ BEGIN
            (CASE WHEN random()<0.5 THEN u_a ELSE u_b END) AS det_user,
            s.n
     FROM p, LATERAL (SELECT n, 1+floor(random()*p.c)::int AS idx
-                     FROM generate_series(1,1000) n) s;
+                     FROM generate_series(1,10000) n) s;
 
     INSERT INTO dbnext.project_record(id, data, date_start, created_by)
         SELECT rec_id, jsonb_build_object('abundance',abundance,'life_stage',life_stage,'sex',sex), d_start, v_admin FROM g_obs;
@@ -396,7 +396,7 @@ BEGIN
         SELECT e.id, g.rec_id FROM g_obs g JOIN dbnext.external_identifier e ON e.identifier='OCC-'||g.rec_id WHERE g.n % 50 = 0;
 
     ------------------------------------------------------------------
-    -- 1000 LIFE-SCIENCE COLLECTIONS (project 8)
+    -- 10000 LIFE-SCIENCE COLLECTIONS (project 8)
     ------------------------------------------------------------------
     CREATE TEMP TABLE g_coll ON COMMIT DROP AS
     WITH p AS (SELECT array_agg(ili_id) a_ili, count(*)::int c FROM pool_ls)
@@ -408,7 +408,7 @@ BEGIN
            (CASE WHEN random()<0.5 THEN u_a ELSE u_b END) AS det_user,
            s.n
     FROM p, LATERAL (SELECT n, 1+floor(random()*p.c)::int AS idx
-                     FROM generate_series(1,1000) n) s;
+                     FROM generate_series(1,10000) n) s;
 
     INSERT INTO dbnext.project_record(id, data, date_start, date_end, created_by)
         SELECT rec_id, '{}'::jsonb, d_day, d_day, v_admin FROM g_coll;
@@ -433,7 +433,7 @@ BEGIN
         JOIN g_coll g ON g.rec_id = pru.id_project_record AND g.det_user = pru.id_user;
 
     ------------------------------------------------------------------
-    -- 1000 PALEONTOLOGY (project 9)
+    -- 10000 PALEONTOLOGY (project 9)
     ------------------------------------------------------------------
     CREATE TEMP TABLE g_pal ON COMMIT DROP AS
     WITH p AS (SELECT array_agg(ili_id) a_ili, array_agg(period) a_per, count(*)::int c FROM pool_foss)
@@ -444,7 +444,7 @@ BEGIN
            (ARRAY['Alum Shale','Whitby Mudstone','Wenlock Limestone','Solnhofen Limestone','Hell Creek','Morrison'])[1+floor(random()*6)] AS formation,
            s.n
     FROM p, LATERAL (SELECT n, 1+floor(random()*p.c)::int AS idx
-                     FROM generate_series(1,1000) n) s;
+                     FROM generate_series(1,10000) n) s;
 
     INSERT INTO dbnext.project_record(id, data, created_by)
         SELECT rec_id, jsonb_build_object('period',period,'formation',formation), v_admin FROM g_pal;
@@ -460,7 +460,7 @@ BEGIN
         SELECT rec_id, k_accession, 'PALB-'||rec_id FROM g_pal;
 
     ------------------------------------------------------------------
-    -- 1000 MINERALOGY (project 10)
+    -- 10000 MINERALOGY (project 10)
     ------------------------------------------------------------------
     CREATE TEMP TABLE g_min ON COMMIT DROP AS
     WITH p AS (SELECT array_agg(ili_id) a_ili, array_agg(crystal_system) a_cs,
@@ -473,7 +473,7 @@ BEGIN
            (-55 + random()*125)::float8  AS lat,
            s.n
     FROM p, LATERAL (SELECT n, 1+floor(random()*p.c)::int AS idx
-                     FROM generate_series(1,1000) n) s;
+                     FROM generate_series(1,10000) n) s;
 
     INSERT INTO dbnext.project_record(id, data, created_by)
         SELECT rec_id, jsonb_build_object('crystal_system',crystal_system,'mohs_hardness',mohs,'chemical_formula',formula), v_admin FROM g_min;

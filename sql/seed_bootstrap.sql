@@ -52,7 +52,7 @@ COMMIT;
 --   psql -d DBNAME -f sql/db_schema.sql          -- schema + extensions *
 --   psql -d DBNAME -f sql/seed_bootstrap.sql     -- this file (scaffold)
 --   psql -d DBNAME -f sql/seed_test_data.sql     -- curated demo
---   psql -d DBNAME -f sql/seed_bulk_data.sql     -- 4000 bulk records
+--   psql -d DBNAME -f sql/seed_bulk_data.sql     -- 40000 bulk records
 --   psql -d DBNAME -f sql/seed_relations_data.sql-- locations + stores links
 --   psql -d DBNAME -f sql/seed_taxon_branch.sql  -- taxon lineage into item.data
 --

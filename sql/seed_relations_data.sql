@@ -66,7 +66,7 @@ BEGIN
         VALUES ('Collection Stores','physical storage units (building/room/cabinet)', v_admin)
         RETURNING id INTO P_store;
 
-    INSERT INTO dbnext.item_list(name, description, data, item_list_id_data_group, item_id_data_group, created_by)
+    INSERT INTO dbnext.item_list(name, description, data, item_list_id_data_group, item_list_item_id_data_group, created_by)
     VALUES ('Locations','collecting localities (country > locality)','{}'::jsonb, dg_list, dg_item, v_admin),
            ('Collection Stores','storage hierarchy (building > room > cabinet)','{}'::jsonb, dg_list, dg_item, v_admin);
     SELECT id INTO L_loc   FROM dbnext.item_list WHERE name='Locations';
@@ -174,7 +174,7 @@ BEGIN
     INSERT INTO dbnext.project_record(id, data, created_by)
         SELECT rec_id, jsonb_build_object('country',country,'locality',locality), v_admin FROM loc_rec;
     INSERT INTO dbnext.project_record_project(id_project_record, id_project) SELECT rec_id, P_loc FROM loc_rec;
-    INSERT INTO dbnext.project_record_geometry(id_record, geom) SELECT rec_id, geom FROM loc_rec;
+    INSERT INTO dbnext.project_record_geometry(id_project_record, geom) SELECT rec_id, geom FROM loc_rec;
     INSERT INTO dbnext.project_record_determination(id_project_record, id_item_list_item, preferred)
         SELECT rec_id, ili_id, true FROM loc_rec;
 
@@ -197,9 +197,9 @@ BEGIN
     -- 1. attach every domain record (7-10) to its NEAREST locality
     ------------------------------------------------------------------
     CREATE TEMP TABLE dom ON COMMIT DROP AS
-    SELECT DISTINCT ON (g.id_record) g.id_record AS rec_id, g.geom
+    SELECT DISTINCT ON (g.id_project_record) g.id_project_record AS rec_id, g.geom
     FROM dbnext.project_record_geometry g
-    JOIN dbnext.project_record_project prp ON prp.id_project_record = g.id_record
+    JOIN dbnext.project_record_project prp ON prp.id_project_record = g.id_project_record
     WHERE prp.id_project IN (7,8,9,10);
 
     INSERT INTO dbnext.project_record_parent(id_project_record, id_project_record_parent, id_keyword)

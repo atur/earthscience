@@ -56,7 +56,7 @@ BEGIN
     DELETE FROM dbnext.project_item_list         WHERE id_project = ANY(p_ids);
     DELETE FROM dbnext.project_keyword           WHERE id_project = ANY(p_ids);
     UPDATE dbnext.project
-        SET id_data_group = NULL, record_id_data_group = NULL
+        SET id_data_group = NULL
         WHERE id = ANY(p_ids);
 
     ----------------------------------------------------------------
@@ -100,9 +100,6 @@ BEGIN
     DELETE FROM dbnext.keyword WHERE id_data_group = ANY(dg_ids) AND id_parent IS NOT NULL;
     DELETE FROM dbnext.keyword WHERE id_data_group = ANY(dg_ids) AND id_parent IS NULL;
 
-    DELETE FROM dbnext.data_predefined_values
-        WHERE id_data_definition IN (
-            SELECT id FROM dbnext.data_definition WHERE id_group = ANY(dg_ids));
     DELETE FROM dbnext.data_definition WHERE id_group = ANY(dg_ids);
     DELETE FROM dbnext.data_group WHERE id = ANY(dg_ids);
 

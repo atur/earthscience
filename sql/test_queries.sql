@@ -17,7 +17,7 @@
 ----------------------------------------------------------------------
 SELECT pr.id, k.name AS domain, public.ST_AsText(g.geom) AS location
 FROM dbnext.project_record_geometry g
-JOIN dbnext.project_record pr ON pr.id = g.id_record
+JOIN dbnext.project_record pr ON pr.id = g.id_project_record
 JOIN dbnext.project_record_keyword prk ON prk.id_project_record = pr.id
 JOIN dbnext.keyword k ON k.id = prk.id_keyword AND k.id_parent = 40  -- Domain
 WHERE g.geom && public.ST_MakeEnvelope(5, 45, 17, 59, 4326)
@@ -32,7 +32,7 @@ SELECT pr.id,
                 public.ST_SetSRID(public.ST_MakePoint(16.3738, 48.2082), 4326)::geography
               ) / 1000)::numeric, 1) AS km_from_vienna
 FROM dbnext.project_record_geometry g
-JOIN dbnext.project_record pr ON pr.id = g.id_record
+JOIN dbnext.project_record pr ON pr.id = g.id_project_record
 WHERE public.ST_DWithin(
         g.geom::geography,
         public.ST_SetSRID(public.ST_MakePoint(16.3738, 48.2082), 4326)::geography,
@@ -236,7 +236,7 @@ SELECT p.id AS project, p.name,
 FROM dbnext.project p
 LEFT JOIN dbnext.project_record_project prp ON prp.id_project = p.id
 LEFT JOIN dbnext.project_record_determination d ON d.id_project_record = prp.id_project_record
-LEFT JOIN dbnext.project_record_geometry g ON g.id_record = prp.id_project_record
+LEFT JOIN dbnext.project_record_geometry g ON g.id_project_record = prp.id_project_record
 WHERE p.id IN (7, 8, 9, 10)
 GROUP BY p.id, p.name
 ORDER BY p.id;

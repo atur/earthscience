@@ -174,11 +174,18 @@ BEGIN
     SELECT id INTO dd_lifestage FROM dbnext.data_definition WHERE id_group=dg_biodiv  AND name='life_stage';
     SELECT id INTO dd_sex       FROM dbnext.data_definition WHERE id_group=dg_biodiv  AND name='sex';
 
-    INSERT INTO dbnext.data_predefined_values(id_data_definition, value) VALUES
-        (dd_period,  ARRAY['Cambrian','Ordovician','Silurian','Devonian','Carboniferous','Permian','Triassic','Jurassic','Cretaceous','Paleogene','Neogene','Quaternary']),
-        (dd_crystal, ARRAY['cubic','tetragonal','hexagonal','trigonal','orthorhombic','monoclinic','triclinic']),
-        (dd_lifestage, ARRAY['egg','larva','juvenile','adult']),
-        (dd_sex,     ARRAY['male','female','unknown']);
+    UPDATE dbnext.data_definition SET predefined_values =
+        ARRAY['Cambrian','Ordovician','Silurian','Devonian','Carboniferous','Permian','Triassic','Jurassic','Cretaceous','Paleogene','Neogene','Quaternary']
+        WHERE id = dd_period;
+    UPDATE dbnext.data_definition SET predefined_values =
+        ARRAY['cubic','tetragonal','hexagonal','trigonal','orthorhombic','monoclinic','triclinic']
+        WHERE id = dd_crystal;
+    UPDATE dbnext.data_definition SET predefined_values =
+        ARRAY['egg','larva','juvenile','adult']
+        WHERE id = dd_lifestage;
+    UPDATE dbnext.data_definition SET predefined_values =
+        ARRAY['male','female','unknown']
+        WHERE id = dd_sex;
 
     ------------------------------------------------------------------
     -- 3. keyword classification hierarchies (heavy use of keywords)
@@ -274,7 +281,7 @@ BEGIN
     ------------------------------------------------------------------
     -- 5. taxonomies: item_list / item / item_list_item (hierarchy + synonymy)
     ------------------------------------------------------------------
-    INSERT INTO dbnext.item_list(name, description, data, item_list_id_data_group, item_id_data_group, created_by)
+    INSERT INTO dbnext.item_list(name, description, data, item_list_id_data_group, item_list_item_id_data_group, created_by)
     VALUES
         ('Birds of Central Europe', 'demo bird checklist',   '{}'::jsonb, dg_list, dg_item, v_admin),
         ('Vascular Plants',         'demo plant taxonomy',   '{}'::jsonb, dg_list, dg_item, v_admin),
@@ -445,13 +452,13 @@ BEGIN
     ------------------------------------------------------------------
     -- 6. wire projects: data groups, keywords, item lists
     ------------------------------------------------------------------
-    UPDATE dbnext.project SET id_user=v_admin, id_data_group=dg_biodiv, record_id_data_group=dg_biodiv WHERE id=p_obs;
-    UPDATE dbnext.project SET id_user=v_admin, id_data_group=dg_biodiv, record_id_data_group=dg_biodiv WHERE id=p_coll;
-    UPDATE dbnext.project SET id_user=v_admin, id_data_group=dg_paleo,  record_id_data_group=dg_paleo  WHERE id=p_paleo;
-    UPDATE dbnext.project SET id_user=v_admin, id_data_group=dg_mineral,record_id_data_group=dg_mineral WHERE id=p_min;
+    UPDATE dbnext.project SET id_user=v_admin, id_data_group=dg_biodiv WHERE id=p_obs;
+    UPDATE dbnext.project SET id_user=v_admin, id_data_group=dg_biodiv WHERE id=p_coll;
+    UPDATE dbnext.project SET id_user=v_admin, id_data_group=dg_paleo  WHERE id=p_paleo;
+    UPDATE dbnext.project SET id_user=v_admin, id_data_group=dg_mineral WHERE id=p_min;
 
-    INSERT INTO dbnext.project_record_data_group(id_project, id_data_group) VALUES
-        (p_obs, dg_biodiv), (p_coll, dg_biodiv), (p_paleo, dg_paleo), (p_min, dg_mineral);
+    INSERT INTO dbnext.project_record_data_group(id_project, id_data_group, sort) VALUES
+        (p_obs, dg_biodiv, 1), (p_coll, dg_biodiv, 1), (p_paleo, dg_paleo, 1), (p_min, dg_mineral, 1);
 
     INSERT INTO dbnext.project_keyword(id_project, id_keyword) VALUES
         (p_obs, k_dom_obs), (p_coll, k_dom_coll), (p_paleo, k_dom_paleo), (p_min, k_dom_min);
@@ -478,7 +485,7 @@ BEGIN
     INSERT INTO dbnext.project_record_project(id_project_record, id_project) VALUES
         (r_o1,p_obs),(r_o2,p_obs),(r_o3,p_obs),(r_o4,p_obs);
 
-    INSERT INTO dbnext.project_record_geometry(id_record, geom) VALUES
+    INSERT INTO dbnext.project_record_geometry(id_project_record, geom) VALUES
         (r_o1, public.ST_SetSRID(public.ST_MakePoint(16.3738,48.2082),4326)),
         (r_o2, public.ST_SetSRID(public.ST_MakePoint(16.4000,48.1900),4326)),
         (r_o3, public.ST_SetSRID(public.ST_MakePoint(11.5820,48.1351),4326)),
@@ -526,7 +533,7 @@ BEGIN
     INSERT INTO dbnext.project_record_project(id_project_record, id_project) VALUES
         (r_c1,p_coll),(r_c2,p_coll),(r_c3,p_coll),(r_c4,p_coll);
 
-    INSERT INTO dbnext.project_record_geometry(id_record, geom) VALUES
+    INSERT INTO dbnext.project_record_geometry(id_project_record, geom) VALUES
         (r_c1, public.ST_SetSRID(public.ST_MakePoint(8.5417,47.3769),4326)),
         (r_c2, public.ST_SetSRID(public.ST_MakePoint(8.5417,47.3769),4326)),
         (r_c3, public.ST_SetSRID(public.ST_MakePoint(7.4474,46.9480),4326)),
@@ -595,7 +602,7 @@ BEGIN
     INSERT INTO dbnext.project_record_project(id_project_record, id_project) VALUES
         (r_p1,p_paleo),(r_p2,p_paleo),(r_p3,p_paleo),(r_plot,p_paleo),(r_pthin,p_paleo);
 
-    INSERT INTO dbnext.project_record_geometry(id_record, geom) VALUES
+    INSERT INTO dbnext.project_record_geometry(id_project_record, geom) VALUES
         (r_p1, public.ST_SetSRID(public.ST_MakePoint(14.5906,58.4109),4326)),  -- Sweden
         (r_p2, public.ST_SetSRID(public.ST_MakePoint(-0.6139,54.4858),4326)),  -- Whitby, UK
         (r_p3, public.ST_SetSRID(public.ST_MakePoint(-2.6160,52.4000),4326)),  -- Wenlock, UK
@@ -651,7 +658,7 @@ BEGIN
     INSERT INTO dbnext.project_record_project(id_project_record, id_project) VALUES
         (r_m1,p_min),(r_m2,p_min),(r_m3,p_min),(r_m4,p_min),(r_mlot,p_min),(r_mpol,p_min);
 
-    INSERT INTO dbnext.project_record_geometry(id_record, geom) VALUES
+    INSERT INTO dbnext.project_record_geometry(id_project_record, geom) VALUES
         (r_m1, public.ST_SetSRID(public.ST_MakePoint(7.0,46.0),4326)),
         (r_m2, public.ST_SetSRID(public.ST_MakePoint(-4.1,40.5),4326)),   -- Spain
         (r_m3, public.ST_SetSRID(public.ST_MakePoint(11.0,46.5),4326)),

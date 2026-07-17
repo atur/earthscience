@@ -37,12 +37,9 @@ database:
    the PostGIS and pg_trgm extensions (the role running it needs
    superuser to create extensions).
 
-   > IMPORTANT: the seeds target the LIVE database layout, which has
-   > diverged from the committed `sql/db_schema.sql` (e.g.
-   > `data_definition.id_group` vs `id_data_group`,
-   > `project_record_geometry.id_record` vs `id_project_record`). If your
-   > `db_schema.sql` still differs from the working DB, build the schema
-   > by dumping the working DB instead:
+   > If your working DB ever differs from the committed
+   > `sql/db_schema.sql`, build the schema by dumping the working DB
+   > instead:
    >
    > ```
    > pg_dump --schema-only --schema=dbnext SOURCEDB > sql/schema_live.sql

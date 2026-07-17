@@ -84,7 +84,7 @@ BEGIN
     ------------------------------------------------------------------
     -- bulk taxonomy item_lists
     ------------------------------------------------------------------
-    INSERT INTO dbnext.item_list(name, description, data, item_list_id_data_group, item_id_data_group, created_by)
+    INSERT INTO dbnext.item_list(name, description, data, item_list_id_data_group, item_list_item_id_data_group, created_by)
     VALUES ('Animalia - full taxonomy','bulk Linnaean animal taxonomy','{}'::jsonb, dg_list, dg_item, v_admin),
            ('Plantae - full taxonomy', 'bulk Linnaean plant taxonomy', '{}'::jsonb, dg_list, dg_item, v_admin),
            ('Fossil taxa - full taxonomy','bulk fossil taxonomy w/ periods','{}'::jsonb, dg_list, dg_item, v_admin),
@@ -373,7 +373,7 @@ BEGIN
     INSERT INTO dbnext.project_record_project(id_project_record, id_project) SELECT rec_id, 7 FROM g_obs;
     INSERT INTO dbnext.project_record_determination(id_project_record, id_item_list_item, preferred, determined_by, id_determination_method, determination_date)
         SELECT rec_id, ili_id, true, det_user, k_morph, d_start::date FROM g_obs;
-    INSERT INTO dbnext.project_record_geometry(id_record, geom)
+    INSERT INTO dbnext.project_record_geometry(id_project_record, geom)
         SELECT rec_id, public.ST_SetSRID(public.ST_MakePoint(lon,lat),4326) FROM g_obs;
     INSERT INTO dbnext.project_record_keyword(id_project_record, id_keyword) SELECT rec_id, k_dom_obs FROM g_obs;
     INSERT INTO dbnext.project_record_keyword(id_project_record, id_keyword)
@@ -415,7 +415,7 @@ BEGIN
     INSERT INTO dbnext.project_record_project(id_project_record, id_project) SELECT rec_id, 8 FROM g_coll;
     INSERT INTO dbnext.project_record_determination(id_project_record, id_item_list_item, preferred, determined_by, id_determination_method)
         SELECT rec_id, ili_id, true, det_user, k_morph FROM g_coll;
-    INSERT INTO dbnext.project_record_geometry(id_record, geom)
+    INSERT INTO dbnext.project_record_geometry(id_project_record, geom)
         SELECT rec_id, public.ST_SetSRID(public.ST_MakePoint(lon,lat),4326) FROM g_coll;
     INSERT INTO dbnext.project_record_keyword(id_project_record, id_keyword) SELECT rec_id, k_dom_coll FROM g_coll;
     INSERT INTO dbnext.project_record_keyword(id_project_record, id_keyword)
@@ -451,7 +451,7 @@ BEGIN
     INSERT INTO dbnext.project_record_project(id_project_record, id_project) SELECT rec_id, 9 FROM g_pal;
     INSERT INTO dbnext.project_record_determination(id_project_record, id_item_list_item, preferred, determined_by, id_determination_method)
         SELECT rec_id, ili_id, true, u_b, k_morph FROM g_pal;
-    INSERT INTO dbnext.project_record_geometry(id_record, geom)
+    INSERT INTO dbnext.project_record_geometry(id_project_record, geom)
         SELECT rec_id, public.ST_SetSRID(public.ST_MakePoint(lon,lat),4326) FROM g_pal;
     INSERT INTO dbnext.project_record_keyword(id_project_record, id_keyword) SELECT rec_id, k_dom_paleo FROM g_pal;
     INSERT INTO dbnext.project_record_keyword(id_project_record, id_keyword)
@@ -480,7 +480,7 @@ BEGIN
     INSERT INTO dbnext.project_record_project(id_project_record, id_project) SELECT rec_id, 10 FROM g_min;
     INSERT INTO dbnext.project_record_determination(id_project_record, id_item_list_item, preferred, determined_by, id_determination_method)
         SELECT rec_id, ili_id, true, u_a, k_xrd FROM g_min;
-    INSERT INTO dbnext.project_record_geometry(id_record, geom)
+    INSERT INTO dbnext.project_record_geometry(id_project_record, geom)
         SELECT rec_id, public.ST_SetSRID(public.ST_MakePoint(lon,lat),4326) FROM g_min;
     INSERT INTO dbnext.project_record_keyword(id_project_record, id_keyword) SELECT rec_id, k_dom_min FROM g_min;
     INSERT INTO dbnext.project_record_keyword(id_project_record, id_keyword)

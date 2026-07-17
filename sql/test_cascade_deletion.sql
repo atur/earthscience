@@ -59,15 +59,15 @@ BEGIN
         RETURNING id INTO v_user2;
 
     INSERT INTO dbnext.project
-        (name, description, data, id_data_group, record_id_data_group, id_user)
-        VALUES ('Cascade Test Project', '', '{}'::jsonb, v_dg, v_dg, v_user1)
+        (name, description, data, id_data_group, id_user)
+        VALUES ('Cascade Test Project', '', '{}'::jsonb, v_dg, v_user1)
         RETURNING id INTO v_project;
 
     INSERT INTO dbnext.item (language, data, name)
         VALUES ('en', '{}'::jsonb, 'Quercus robur')
         RETURNING id INTO v_item;
     INSERT INTO dbnext.item_list
-        (name, description, data, item_list_id_data_group, item_id_data_group)
+        (name, description, data, item_list_id_data_group, item_list_item_id_data_group)
         VALUES ('Test Taxonomy', '', '{}'::jsonb, v_dg, v_dg)
         RETURNING id INTO v_item_list;
     INSERT INTO dbnext.item_list_item (id_item_list, id_item)
@@ -147,7 +147,7 @@ BEGIN
         VALUES (v_ext, v_pr_main);
 
     -- (2) project_record_geometry
-    INSERT INTO dbnext.project_record_geometry (id_record, geom)
+    INSERT INTO dbnext.project_record_geometry (id_project_record, geom)
         VALUES (v_pr_main,
                 public.ST_SetSRID(public.ST_MakePoint(8.55, 47.37), 4326));
 
@@ -201,7 +201,7 @@ BEGIN
         (SELECT count(*) FROM dbnext.external_identifier_project_record
            WHERE id_project_record = v_pr_main)
       + (SELECT count(*) FROM dbnext.project_record_geometry
-           WHERE id_record = v_pr_main)
+           WHERE id_project_record = v_pr_main)
       + (SELECT count(*) FROM dbnext.project_record_media
            WHERE id_project_record = v_pr_main)
       + (SELECT count(*) FROM dbnext.project_record_identifier
@@ -252,7 +252,7 @@ BEGIN
 
     SELECT count(*) INTO cnt
         FROM dbnext.project_record_geometry
-        WHERE id_record = v_pr_main;
+        WHERE id_project_record = v_pr_main;
     ASSERT cnt = 0, 'project_record_geometry not cascaded';
 
     SELECT count(*) INTO cnt

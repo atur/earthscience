@@ -20,7 +20,7 @@ tables.
 | # | Child table                        | FK column                               | Constraint                                          |
 |---|------------------------------------|-----------------------------------------|-----------------------------------------------------|
 | 1 | `external_identifier_project_record` | `id_project_record`                   | `fk_eipr_project_record`                            |
-| 2 | `project_record_geometry`          | `id_record`                             | `fk_geometry_record`                                |
+| 2 | `project_record_geometry`          | `id_project_record`                             | `fk_geometry_record`                                |
 | 3 | `project_record_media`             | `id_project_record`                     | `fk_prm_project_record`                             |
 | 4 | `project_record_determination`     | `id_project_record`                     | `fk_prd_record`                                     |
 | 5 | `project_record_identifier`        | `id_project_record`                     | `fk_pri_project_record`                             |

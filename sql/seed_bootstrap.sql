@@ -56,10 +56,7 @@ COMMIT;
 --   psql -d DBNAME -f sql/seed_relations_data.sql-- locations + stores links
 --   psql -d DBNAME -f sql/seed_taxon_branch.sql  -- taxon lineage into item.data
 --
--- * IMPORTANT: the seeds match the LIVE dbnext3 column layout, which has
---   diverged from the committed sql/db_schema.sql (e.g. data_definition.id_group
---   vs id_data_group, project_record_geometry.id_record vs id_project_record).
---   If db_schema.sql still differs from your live DB, build the schema by
+-- * If db_schema.sql ever differs from your live DB, build the schema by
 --   dumping it from the working database instead:
 --     pg_dump --schema-only --schema=dbnext SOURCEDB > sql/schema_live.sql
 --   then load schema_live.sql in the step above.

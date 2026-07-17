@@ -175,7 +175,7 @@ SELECT pr.id, i.name AS taxon,
        round((public.ST_Distance(g.geom::geography,
               public.ST_SetSRID(public.ST_MakePoint(11.58,48.14),4326)::geography)/1000)::numeric,1) AS km
 FROM dbnext.project_record_geometry g
-JOIN dbnext.project_record pr ON pr.id = g.id_record
+JOIN dbnext.project_record pr ON pr.id = g.id_project_record
 LEFT JOIN dbnext.project_record_determination d ON d.id_project_record = pr.id AND d.preferred
 LEFT JOIN dbnext.item_list_item ili ON ili.id = d.id_item_list_item
 LEFT JOIN dbnext.item i ON i.id = ili.id_item
@@ -323,7 +323,7 @@ FROM dbnext.project_record pr
 JOIN dbnext.project_record_project prp ON prp.id_project_record = pr.id
 JOIN dbnext.project p ON p.id = prp.id_project
 WHERE prp.id_project IN (7,8,9,10)
-  AND NOT EXISTS (SELECT 1 FROM dbnext.project_record_geometry g WHERE g.id_record = pr.id)
+  AND NOT EXISTS (SELECT 1 FROM dbnext.project_record_geometry g WHERE g.id_project_record = pr.id)
 ORDER BY pr.id
 LIMIT 100;
 
@@ -366,7 +366,7 @@ SELECT p.name AS collection,
            WHERE d.id_project_record = pr.id AND d.preferred)) / count(*), 1) AS pct_determined,
        round(100.0 * count(*) FILTER (WHERE EXISTS (
            SELECT 1 FROM dbnext.project_record_geometry g
-           WHERE g.id_record = pr.id)) / count(*), 1) AS pct_georeferenced
+           WHERE g.id_project_record = pr.id)) / count(*), 1) AS pct_georeferenced
 FROM dbnext.project_record pr
 JOIN dbnext.project_record_project prp ON prp.id_project_record = pr.id
 JOIN dbnext.project p ON p.id = prp.id_project
